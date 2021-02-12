@@ -73,7 +73,7 @@
     <Compile Include="Validators\BirthDateValidator.cs" />
     <Compile Include="Validators\SocialSecurityNumberValidator.cs" />
     <Compile Include="Validators\StringValidator.cs" />
-    <Compile Include="ViewModels\ZpravaViewModel.cs" />
+    <Compile Include="ViewModels\PeopleViewModel.cs" />
     <Compile Include="Views\ZpravaView.xaml.cs">
       <DependentUpon>ZpravaView.xaml</DependentUpon>
     </Compile>

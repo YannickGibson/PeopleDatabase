@@ -10,6 +10,14 @@ namespace DependencyInjection.Validators
     // Poskytuje službu validace vstupu typu string
     class BirthDateValidator 
     {
-        public bool IsValid(DateTime s) { return s > DateTime.Now - TimeSpan.FromDays( 365*18); }
+        public bool IsValid(DateTime s) {
+
+            if (DateTime.Now - s > TimeSpan.FromDays(365 * 200) // if More than 200 years old
+                || (DateTime.Now - s).Days <= TimeSpan.Zero.Days // if Future Dates than now
+                || DateTime.Now - s < TimeSpan.FromDays(365 / 18) // if Less Than 18 years old
+            )
+                return false;
+            return true;
+        }
     }
 }

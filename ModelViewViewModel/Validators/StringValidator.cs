@@ -8,7 +8,7 @@ namespace DependencyInjection.Validators
 {
     // Service class
     // Poskytuje službu validace vstupu typu string
-    class SurnameValidator 
+    class StringValidator
     {
         public bool IsValid(string s) { return s.Length > 1; }
     }

@@ -45,7 +45,14 @@ namespace ModelViewViewModel
             {
                 sb.Append(p + "\n");
             }
-            MessageBox.Show(sb.ToString());
+            if (sb.Length == 0)
+            {
+                MessageBox.Show("Database was left empty");
+            }
+            else
+            {
+                MessageBox.Show(sb.ToString());
+            }
         }
     }
 }

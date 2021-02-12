@@ -17,18 +17,20 @@ using System.Diagnostics;
 using GalaSoft.MvvmLight.Command;
 
 using ModelViewViewModel.Models;
+using DependencyInjection.Validators;
 
 namespace ModelViewViewModel.ViewModels
 {
-/// <summary>
-/// ViewModel pro aplikaci
-/// </summary>
+    /// <summary>
+    /// ViewModel pro aplikaci
+    /// </summary>
 
-    public class ZpravaViewModel:INotifyPropertyChanged  
+    public class PeopleViewModel : INotifyPropertyChanged
     {
         // pro navázání komunikace mezi GUI a ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
 
+        
 
         // FirstName, LastName, BirthDate, SocialSecurityNumber jsou bindovány z GUI
 
@@ -36,7 +38,7 @@ namespace ModelViewViewModel.ViewModels
         public string FirstName
         {
             get { return firstName; }
-            set 
+            set
             {
                 firstName = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FirstName)));
@@ -54,8 +56,8 @@ namespace ModelViewViewModel.ViewModels
             }
         }
 
-        private string BirthDate;
-        public string birthDate
+        private DateTime birthDate;
+        public DateTime BirthDate
         {
             get { return birthDate; }
             set
@@ -75,11 +77,17 @@ namespace ModelViewViewModel.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SocialSecurityNumber)));
             }
         }
+        StringValidator stringValidator = new StringValidator();
+        BirthDateValidator birthDateValidator = new BirthDateValidator();
+        SocialSecurityNumberValidator socialSecurityNumberValidator = new SocialSecurityNumberValidator();
 
-        
+        public PeopleViewModel()
+        {
+            BirthDate = DateTime.Now - TimeSpan.FromDays(365*19);
+        }
+
 
         private static ICommand _sendCommand;
-
         // SendCommand je bindovaný z GUI
         public ICommand SendCommand
         {
@@ -89,10 +97,45 @@ namespace ModelViewViewModel.ViewModels
                 {
                     // RelayCommand je definovaný v MVVMLight
                     _sendCommand = new RelayCommand(
-                        () => { 
+                        () =>
+                        {
                             // Tady je práce, která se má odmakat, když se spustí command
-                            Debug.WriteLine(string.Join(", ", FirstName, LastName, BirthDate, SocialSecurityNumber) );
+                            Debug.WriteLine(string.Join(", ", FirstName, LastName, BirthDate, SocialSecurityNumber));
 
+                            if(string.IsNullOrEmpty(FirstName)
+                            || string.IsNullOrEmpty(LastName)
+                            || BirthDate == default(DateTime) // therefore 0001/1/1 12:00AM is not valid
+                            || string.IsNullOrEmpty(SocialSecurityNumber))
+                            {
+                                MessageBox.Show("Fill in all the fields");
+                                return;
+                            }
+
+                            if (!stringValidator.IsValid(FirstName))
+                            {
+                                MessageBox.Show("First name is invalid");
+                            }
+                            else if (!stringValidator.IsValid(lastName))
+                            {
+                                MessageBox.Show("Last name is invalid");
+                            }
+                            else if (!birthDateValidator.IsValid(BirthDate))
+                            {
+                                MessageBox.Show("BirthDate is invalid");
+                            }
+                            else if (!socialSecurityNumberValidator.IsValid(SocialSecurityNumber, BirthDate))
+                            {
+                                MessageBox.Show("Social Security Number is invalid");
+                            }
+                            else
+                            {
+                                DatabaseModel.Database.AddPerson(FirstName, LastName, BirthDate, SocialSecurityNumber);
+                                FirstName = "";
+                                LastName = "";
+                                BirthDate = DateTime.Now - TimeSpan.FromDays(365*19);
+                                SocialSecurityNumber = "";
+                                MessageBox.Show("Success!");
+                            }
                         });
                 }
                 return _sendCommand;

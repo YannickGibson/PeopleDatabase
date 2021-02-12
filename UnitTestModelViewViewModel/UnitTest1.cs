@@ -29,7 +29,7 @@ namespace UnitTestModelViewViewModel
             // Arrange
             string testMessage = "Unit test zprava";
             DatabaseModel z = DatabaseModel.ZpravaDatabase;
-            ZpravaViewModel zvm = new ZpravaViewModel { Zprava = testMessage };
+            PeopleViewModel zvm = new PeopleViewModel { Zprava = testMessage };
 
             // Act
             // Tohle za nás v aplikaci udělá binding

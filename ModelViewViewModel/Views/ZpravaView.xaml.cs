@@ -27,7 +27,7 @@ namespace ModelViewViewModel.Views
             InitializeComponent();
             
             // V tomto rozsahu se budou hledat bindovaná data
-            DataContext = new ZpravaViewModel();
+            DataContext = new PeopleViewModel();
 
             // "Code behind" - kód, který je součástí definice GUI společně s XAML
             // zpracovává pouze vizualizaci Page, ale celá logika zpracování
