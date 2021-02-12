@@ -1,9 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using GalaSoft.MvvmLight.Command;
 using ModelViewViewModel.ViewModels;
 using ModelViewViewModel.Models;
-
+using DependencyInjection.Validators;
 namespace UnitTestModelViewViewModel
 {
     [TestClass]
@@ -24,21 +23,33 @@ namespace UnitTestModelViewViewModel
         /// ale parsování, výpočty, spolupráce s dalšími programy, apod.), 
         /// může takováto konfigurace ušetřit týdny času v rámci většího projektu.
         /// To není kosmetická záležitost!
-        public void TestMethod1()
+        public void AddOnePersonCheckToStringMethodTest()
         {
             // Arrange
-            string testMessage = "Unit test zprava";
-            DatabaseModel z = DatabaseModel.ZpravaDatabase;
-            PeopleViewModel zvm = new PeopleViewModel { Zprava = testMessage };
+            DatabaseModel d = DatabaseModel.Database;
+            PeopleViewModel pvm = new PeopleViewModel { 
+                FirstName = "Yannick",
+                LastName = "Gibson",
+                BirthDate = DateTime.Now - TimeSpan.FromDays(365 * 19),
+                SocialSecurityNumber = "999999/9999"};
 
             // Act
             // Tohle za nás v aplikaci udělá binding
             // na TextBox a Button. V testu to dokážeme simulovat voláním.
-            zvm.SendCommand.Execute(null);
+            pvm.SendCommand.Execute(null);
             
             // Assert
             // Ověř, že se zpráva dostala do datového modelu
-            Assert.AreEqual(z.VsechnyZpravy[0], testMessage);
+            Assert.AreEqual(
+                $"Yannick, Gibson, {DateTime.Now - TimeSpan.FromDays(365 * 19)}, \"999999/9999\"", 
+                string.Join(", ", d.GetAll())
+            );
+        }
+        public void SocialSecurityAbrevationYoungerThan1954Test()
+        {
+            string s = "123456/123";
+            var ssnv = new SocialSecurityNumberValidator();
         }
     }
+
 }
